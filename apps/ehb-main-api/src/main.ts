@@ -16,14 +16,21 @@ async function bootstrap() {
     }),
   );
 
+  // CORS_ORIGIN env var is a comma-separated list of allowed origins.
+  // Dev defaults preserved alongside any production origins from env.
+  const envOrigins = (process.env.CORS_ORIGIN ?? '')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
+
   app.enableCors({
     origin: [
       'http://localhost:4000', // EHB main frontend
       'http://localhost:4001', // PSS frontend
       'http://localhost:4002', // GoSellr frontend
       'http://localhost:4003', // OLS frontend (future)
-      process.env.CORS_ORIGIN ?? '',
-    ].filter(Boolean),
+      ...envOrigins,
+    ],
     credentials: true,
   });
 
